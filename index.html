@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NOVA Dashboard 1.0</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NOVA">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;600&display=swap">
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);--bg:#02060d;--card:#0d1522;--a:#27d9ff;--a2:#2f7bff;--gold:#e8b84a;--text:#dcf3ff;--dim:#7398ab;--ok:#3ddc97;--bad:#ff6b6b;--line:rgba(39,217,255,.22)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(ellipse at 50% -10%,#0b2a4a,var(--bg) 65%),var(--bg);color:var(--text);font:600 17px/1.35 Rajdhani,"Avenir Next",system-ui,sans-serif}
+.app{padding:12px 18px 28px;max-width:1280px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.brand{font:700 21px Orbitron,system-ui,sans-serif;letter-spacing:.2em;color:var(--a);text-shadow:0 0 14px rgba(39,217,255,.5)}
+nav,.tabs{display:flex;gap:6px;flex-wrap:wrap}
+nav button{font:600 14px Orbitron,system-ui,sans-serif;letter-spacing:.1em;padding:11px 18px;background:transparent;border-color:transparent;border-bottom:2px solid transparent;color:var(--dim)}
+nav button.on,.tabs button.on{color:var(--text);background:rgba(39,217,255,.09);border-color:var(--line);border-bottom-color:var(--gold)}
+button,select,input,textarea{font:inherit;color:var(--text);background:rgba(0,0,0,.35);border:1px solid var(--line);padding:8px 12px;border-radius:6px}
+button{cursor:pointer;background:rgba(39,217,255,.07);min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}button:hover{border-color:var(--a)}
+button.pri{background:var(--a);color:var(--bg);border-color:var(--a)}button.gold{border-color:var(--gold);color:var(--gold)}
+:is(button,select,input,textarea):focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+input,textarea,select{width:100%}textarea{min-height:90px;resize:vertical}
+.g{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.w{grid-column:span 4;background:linear-gradient(160deg,rgba(18,30,48,.9),var(--card));border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.w6{grid-column:span 6}.w8{grid-column:span 8}.w12{grid-column:span 12}
+.w h2{margin:0;font:500 13px Orbitron,system-ui,sans-serif;letter-spacing:.1em;color:var(--a);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.big{font:700 44px/1 Orbitron,system-ui,sans-serif;color:var(--a);text-shadow:0 0 16px rgba(39,217,255,.45)}
+.dim{color:var(--dim)}.gold{color:var(--gold)}.bad{color:var(--bad)}small{display:block;font-size:14px}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+li{display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(0,0,0,.28);border-left:3px solid var(--a);border-radius:4px;flex-wrap:wrap}
+li.done{border-left-color:var(--ok)}li.done .t{text-decoration:line-through;color:var(--dim)}li.od{border-left-color:var(--bad)}
+li .t{flex:1;min-width:120px}
+.chk{width:44px;min-width:44px;padding:0}li.done .chk{background:var(--ok);color:var(--bg);border-color:var(--ok)}
+.pill{font-size:13px;padding:1px 9px;border:1px solid var(--line);border-radius:99px}.pr-urgent{color:var(--bad);border-color:var(--bad)}.pr-high{color:var(--gold);border-color:var(--gold)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>select,.row>input{width:auto;flex:1;min-width:120px}
+.bar{height:9px;background:rgba(0,0,0,.45);border:1px solid var(--line);border-radius:6px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--a2),var(--a))}
+.reactor{position:relative;width:190px;aspect-ratio:1;display:grid;place-items:center;margin:0 auto}
+.reactor svg{position:absolute;inset:0;width:100%;height:100%}.reactor .big{font-size:36px}
+.run{box-shadow:0 0 0 1px var(--gold),0 0 22px rgba(232,184,74,.25)}
+.chart{display:flex;align-items:flex-end;gap:10px;height:130px}.chart div{flex:1;text-align:center;display:flex;flex-direction:column;justify-content:flex-end;height:100%;font-size:13px}.chart i{display:block;background:linear-gradient(0deg,var(--a2),var(--a));border-radius:4px 4px 0 0;min-height:2px}
+.empty{padding:14px;border:1px dashed var(--line);border-radius:8px;color:var(--dim)}
+.cc{border-left:4px solid var(--a)}
+#md .mb{position:fixed;inset:0;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:16px;z-index:9}
+#md .mc{background:var(--card);border:1px solid var(--a);border-radius:10px;padding:18px;width:min(520px,100%);max-height:90vh;overflow:auto;display:grid;gap:10px}
+#md h3{margin:0;font:500 15px Orbitron,sans-serif;color:var(--a)}#md label{display:grid;gap:4px;color:var(--dim)}#er{color:var(--bad)}
+@media (max-width:900px){.w{grid-column:span 6}.w8{grid-column:span 12}}
+@media (max-width:600px){.w,.w6,.w8{grid-column:span 12}nav button{padding:10px 10px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">NOVA</div><nav id="nav"></nav></header>
+<main id="v" class="g"></main>
+</div>
+<div id="md"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),uid=()=>Math.random().toString(36).slice(2,9);
+const day=(d=new Date())=>d.toLocaleDateString('sv-SE'),back=n=>day(new Date(Date.now()-n*864e5));
+const fd=d=>new Date(d+'T00:00').toLocaleDateString('nl-NL',{day:'numeric',month:'short'});
+const left=d=>Math.round((new Date(d+'T00:00')-new Date(day()+'T00:00'))/864e5);
+const DEF=()=>({courses:[],tasks:[],projects:[],notes:[],sessions:[],missions:{},cfg:{work:25,rest:5},timer:null});
+const norm=o=>{const d=DEF();for(const k in d)if(typeof o[k]!==typeof d[k]||Array.isArray(o[k])!==Array.isArray(d[k]))o[k]=d[k];return o};
+let D;try{D=norm(JSON.parse(localStorage.getItem('nova.db')))}catch(e){D=DEF()}
+const save=()=>{try{localStorage.setItem('nova.db',JSON.stringify(D))}catch(e){}};
+if(!D.v){const S5=['Bestuursrecht','Omgevingsrecht','Goederenrecht','Ondernemingsrecht','Inleiding Privaatrecht'],used=[...D.tasks,...D.projects,...D.notes,...D.sessions];D.courses=D.courses.filter(c=>!(S5.includes(c.name)&&!c.desc&&!used.some(i=>i.course===c.id)));D.v=2;save()}
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+const UI={tab:'taken',tf:'',ts:'',tsort:'due',pst:'',ppr:'',cs:null,sp:null,q:''};
+const PR={low:'Laag',normal:'Normaal',high:'Hoog',urgent:'Urgent'},PK={urgent:0,high:1,normal:2,low:3},ST={todo:'To do',prog:'Bezig',done:'Klaar'},E=Object.entries;
+const cn=id=>(D.courses.find(c=>c.id===id)||{}).name||'',pt=id=>(D.projects.find(p=>p.id===id)||{}).title||'';
+const co=()=>[['','Geen'],...D.courses.map(c=>[c.id,c.name])],po=()=>[['','Geen'],...D.projects.map(p=>[p.id,p.title])];
+const F={task:[{k:'title',l:'Titel',req:1},{k:'desc',l:'Beschrijving',t:'textarea'},{k:'course',l:'Vak',t:'select',o:co},{k:'project',l:'Project',t:'select',o:po},{k:'due',l:'Deadline',t:'date'},{k:'prio',l:'Prioriteit',t:'select',o:()=>E(PR)},{k:'status',l:'Status',t:'select',o:()=>E(ST)},{k:'est',l:'Geschatte duur (min)',t:'number'},{k:'notes',l:'Notities',t:'textarea'}],
+project:[{k:'title',l:'Titel',req:1},{k:'desc',l:'Beschrijving',t:'textarea'},{k:'course',l:'Vak',t:'select',o:co},{k:'start',l:'Startdatum',t:'date'},{k:'due',l:'Deadline',t:'date'},{k:'prio',l:'Prioriteit',t:'select',o:()=>E(PR)},{k:'status',l:'Status',t:'select',o:()=>E(ST)}],
+course:[{k:'name',l:'Naam',req:1},{k:'desc',l:'Beschrijving',t:'textarea'},{k:'color',l:'Kleur',t:'color'}],
+note:[{k:'title',l:'Titel'},{k:'body',l:'Tekst',t:'textarea'},{k:'course',l:'Vak',t:'select',o:co}],
+mission:[{k:'title',l:'Missie',req:1},{k:'desc',l:'Beschrijving (optioneel)',t:'textarea'}],sub:[{k:'t',l:'Subtaak',req:1}]};
+const DFL={tasks:{prio:'normal',status:'todo',due:'',course:'',project:'',est:0},projects:{prio:'normal',status:'todo',subs:[],course:''},courses:{color:'#27d9ff'},notes:{course:''}};
+/* ---- modal ---- */
+const closeM=()=>$('#md').innerHTML='';
+const modal=h=>$('#md').innerHTML=`<div class="mb"><div class="mc">${h}</div></div>`;
+function form(title,fs,v,ok){modal(`<h3>${title}</h3>${fs.map(f=>{const x=v[f.k]??'',id='f_'+f.k;return `<label>${f.l}${f.t==='textarea'?`<textarea id="${id}">${esc(x)}</textarea>`:f.t==='select'?`<select id="${id}">${f.o().map(([a,b])=>`<option value="${esc(a)}"${x===a?' selected':''}>${esc(b)}</option>`).join('')}</select>`:`<input id="${id}" type="${f.t||'text'}" value="${esc(x)}">`}</label>`}).join('')}<div id="er"></div><div class="row"><button class="pri" id="ok">Opslaan</button><button id="no">Annuleren</button></div>`);
+$('#no').onclick=closeM;$('#ok').onclick=()=>{const o={};fs.forEach(f=>{const x=$('#f_'+f.k).value;o[f.k]=f.t==='number'?Math.max(0,+x||0):x.trim()});const m=fs.find(f=>f.req&&!o[f.k]);if(m){$('#er').textContent=m.l+' is verplicht.';return}ok(o);closeM();save();draw()}}
+function ask(msg,fn,b='Ja, verwijder'){modal(`<p>${msg}</p><div class="row"><button class="pri" id="ok">${b}</button><button id="no">Annuleren</button></div>`);$('#no').onclick=closeM;$('#ok').onclick=()=>{closeM();fn();save();draw()}}
+function edit(c,fk,id,pre={}){let x=id&&D[c].find(i=>i.id===id);form(x?'Bewerken':'Nieuw',F[fk],x||{...DFL[c],...pre},o=>{if(!x){x={id:uid(),...DFL[c],...pre,created:Date.now()};D[c].push(x)}Object.assign(x,o);if(c==='tasks'){x.status==='done'?x.doneAt=x.doneAt||day():delete x.doneAt}if(c==='notes')x.mod=Date.now()})}
+function del(c,id){const x=D[c].find(i=>i.id===id);ask(`Weet je zeker dat je "${esc(x.title||x.name||'dit item')}" wilt verwijderen?`,()=>{D[c]=D[c].filter(i=>i.id!==id);if(c==='courses'){['tasks','projects','notes','sessions'].forEach(k=>D[k].forEach(i=>{if(i.course===id)i.course=''}));if(UI.cs===id)UI.cs=null}if(c==='projects'){D.tasks.forEach(t=>{if(t.project===id)t.project=''});if(UI.sp===id)UI.sp=null}if(c==='tasks')D.sessions.forEach(s=>{if(s.task===id)s.task=''})})}
+/* ---- helpers ---- */
+const cmp=(a,b)=>(a.due||'9')<(b.due||'9')?-1:(a.due||'9')>(b.due||'9')?1:PK[a.prio]-PK[b.prio];
+const pg=p=>p.subs.length?Math.round(p.subs.filter(s=>s.d).length/p.subs.length*100):p.status==='done'?100:0;
+const mins=(a,b,f=()=>1)=>Math.round(D.sessions.filter(s=>{const d=day(new Date(s.start));return d>=a&&d<=b&&f(s)}).reduce((n,s)=>n+s.dur,0));
+const sel=(f,o,v)=>`<select data-f="${f}" aria-label="${f}">${o.map(([a,b])=>`<option value="${esc(a)}"${v===a?' selected':''}>${esc(b)}</option>`).join('')}</select>`;
+const W=(t,b,c='')=>`<section class="w ${c}"><h2>${t}</h2>${b}</section>`;
+const bar=p=>`<div class="bar"><i style="width:${p}%"></i></div>`;
+const taskRow=t=>{const od=t.due&&t.due<day()&&t.status!=='done';return `<li class="${t.status==='done'?'done':''} ${od?'od':''}"><button class="chk" data-a="tog" data-i="${t.id}" aria-label="Voltooien">${t.status==='done'?'✓':''}</button><span class="t">${esc(t.title)}<small class="dim">${[cn(t.course),pt(t.project),t.status==='prog'?'Bezig':'',t.est?t.est+' min':''].filter(Boolean).map(esc).join(' · ')}</small></span><span class="pill pr-${t.prio}">${PR[t.prio]}</span>${t.due?`<time class="${od?'bad':''}">${fd(t.due)}${od?' · te laat':''}</time>`:''}<button data-a="et" data-i="${t.id}">Bewerk</button><button data-a="dt" data-i="${t.id}" aria-label="Verwijder">×</button></li>`};
+const none=(m)=>`<div class="empty">${m}</div>`;
+/* ---- timer ---- */
+let T=D.timer||{ph:'work',dur:D.cfg.work*60,left:D.cfg.work*60,run:false,end:0,start:0,course:'',task:''};
+let WL=null;const wl=async on=>{try{if(on&&navigator.wakeLock&&!WL){WL=await navigator.wakeLock.request('screen');WL.onrelease=()=>WL=null}else if(!on&&WL){await WL.release();WL=null}}catch(e){}};
+const tl=()=>T.run?Math.max(0,(T.end-Date.now())/1000):T.left,sv=()=>{D.timer=T;save()};
+const log=(dur,done)=>D.sessions.push({id:uid(),start:T.start||Date.now(),dur,course:T.course,task:T.task,type:'work',done});
+function fin(){T.run=false;wl(0);if(T.ph==='work')log(Math.round(T.dur/60),true);T.ph=T.ph==='work'?'rest':'work';T.dur=(T.ph==='work'?D.cfg.work:D.cfg.rest)*60;T.left=T.dur;T.start=0;sv();draw()}
+function tdraw(){const m=$('#tm');if(!m)return;const s=Math.ceil(tl()),a=$('#arc');m.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');$('#ph').textContent=(T.ph==='work'?'Werkblok':'Pauze')+(T.run?' · bezig':T.left<T.dur?' · gepauzeerd':'');if(a)a.style.strokeDashoffset=578*(1-tl()/T.dur);$('#gob').textContent=T.run?'Pauzeer':T.left<T.dur?'Hervat':'Start';$('#tw').classList.toggle('run',T.run)}
+const tmini=()=>`<div class="big" id="tm">25:00</div><div class="dim" id="ph"></div>`;
+const tbtn=`<div class="row"><button class="pri" id="gob" data-a="tgo">Start</button>`;
+const nSess=()=>D.sessions.filter(s=>day(new Date(s.start))===day()&&s.done).length;
+function cfg(w,r){D.cfg={work:w,rest:r};if(!T.run&&T.left===T.dur){T.dur=(T.ph==='work'?w:r)*60;T.left=T.dur}sv();draw()}
+/* ---- views ---- */
+const V={
+home(){const t=day(),m=D.missions[t],open=D.tasks.filter(x=>x.status!=='done'&&x.due&&x.due<=t).sort(cmp),dn=D.tasks.filter(x=>x.doneAt===t).length,wk=back(6);
+const dl=[...D.tasks.filter(x=>x.status!=='done'&&x.due>=t).map(x=>({n:x.title,d:x.due,c:cn(x.course)})),...D.projects.filter(x=>x.status!=='done'&&x.due>=t).map(x=>({n:x.title,d:x.due,c:cn(x.course)||'Project'}))].sort((a,b)=>a.d<b.d?-1:1).slice(0,5);
+return (!D.courses.length&&!D.tasks.length&&!D.projects.length?W('Welkom bij NOVA',`<div>Begin met je vakken, taken en dagmissie. Alles wat je invult blijft op dit apparaat bewaard.</div><div class="row"><button class="pri" data-a="nc">+ Vak toevoegen</button><button data-a="nt">+ Taak</button><button data-a="ms">Dagmissie</button></div>`,'w12'):'')+W('Klok',`<div class="big" id="clk">--:--</div><div class="dim" id="dt"></div><div class="gold" id="gr" style="font-size:20px"></div>`)
++W('Dagmissie',m?`<div style="font-size:21px" class="${m.done?'dim':''}">${esc(m.title)}</div>${m.desc?`<div class="dim">${esc(m.desc)}</div>`:''}${bar(m.done?100:0)}<div class="${m.done?'':'gold'}">${m.done?'Voltooid':'Open'}</div><div class="row"><button class="pri" data-a="md">${m.done?'Heropen':'Voltooid'}</button><button data-a="ms">Wijzig missie</button></div>`:none('Nog geen missie voor vandaag.')+'<button class="gold" data-a="ms">Stel je missie in</button>')
++W('Focus',`<div id="tw">${tmini()}</div>${tbtn}<button data-a="gf">Opties</button></div><div class="dim">${nSess()} sessies vandaag</div>`)
++W('Taken vandaag',`<input data-qt placeholder="Nieuwe taak voor vandaag, Enter" aria-label="Nieuwe taak" maxlength="80">${open.length?`<ul>${open.map(taskRow).join('')}</ul>`:none('Niets gepland of te laat. Voeg een taak toe.')}`,'w6')
++W('Aankomende deadlines',dl.length?`<ul>${dl.map(x=>{const n=left(x.d);return `<li class="${n<=2?'od':''}"><span class="t">${esc(x.n)}<small class="dim">${esc(x.c)}</small></span><time class="${n<=2?'gold':''}">${n===0?'vandaag':n+' d'}</time></li>`}).join('')}</ul>`:none('Geen deadlines. Geef taken of projecten een deadline.'),'w6')
++W('Productiviteit',`<div class="row" style="gap:26px"><div><div class="big" style="font-size:30px">${dn}</div><div class="dim">taken vandaag klaar</div></div><div><div class="big" style="font-size:30px">${mins(t,t)}</div><div class="dim">min focus vandaag</div></div><div><div class="big" style="font-size:30px">${m?m.done?'✓':'…':'–'}</div><div class="dim">missie</div></div></div><div class="dim">Afgelopen 7 dagen: ${D.tasks.filter(x=>x.doneAt>=wk).length} taken klaar, ${mins(wk,t)} min focus</div>`,'w8')
++W('Snel starten',`<div class="row"><button data-a="nt">+ Taak</button><button data-a="np">+ Project</button><button data-a="nn">+ Notitie</button><button class="gold" data-a="gf">Start focus</button></div>`)},
+study(){const T_=[['taken','Taken'],['vakken','Vakken'],['notities','Notities'],['focus','Focus']];
+return `<div class="w12 tabs">${T_.map(([k,l])=>`<button class="${UI.tab===k?'on':''}" data-a="tab" data-v="${k}">${l}</button>`).join('')}</div>`+V[UI.tab]()},
+taken(){let l=D.tasks.filter(t=>(!UI.tf||t.course===UI.tf)&&(!UI.ts||t.status===UI.ts));l=UI.tsort==='prio'?l.sort((a,b)=>PK[a.prio]-PK[b.prio]||cmp(a,b)):l.sort(cmp);
+return W('Studietaken',`<div class="row"><button class="pri" data-a="nt">+ Nieuwe taak</button>${sel('tf',[['','Alle vakken'],...co().slice(1)],UI.tf)}${sel('ts',[['','Alle statussen'],...E(ST)],UI.ts)}${sel('tsort',[['due','Sorteer: deadline'],['prio','Sorteer: prioriteit']],UI.tsort)}</div>${l.length?`<ul>${l.map(taskRow).join('')}</ul>`:none(D.tasks.length?'Geen taken voor dit filter.':'Nog geen taken. Maak je eerste taak aan.')}`,'w12')},
+vakken(){const c=D.courses.find(x=>x.id===UI.cs);return W('Vakken',`<div class="row"><button class="pri" data-a="nc">+ Nieuw vak</button></div>${D.courses.length?`<ul>${D.courses.map(x=>{const ts=D.tasks.filter(t=>t.course===x.id),d=ts.filter(t=>t.status==='done').length,p=ts.length?Math.round(d/ts.length*100):0;return `<li class="cc" style="border-left-color:${esc(x.color)}"><span class="t">${esc(x.name)}<small class="dim">${d}/${ts.length} taken · ${mins('0','9',s=>s.course===x.id)} min gestudeerd</small>${bar(p)}</span><button data-a="sc" data-i="${x.id}">Open</button><button data-a="ec" data-i="${x.id}">Bewerk</button><button data-a="dc" data-i="${x.id}" aria-label="Verwijder">×</button></li>`}).join('')}</ul>`:none('Nog geen vakken. Voeg er een toe.')}`,'w12')
++(c?W(esc(c.name),`${c.desc?`<div class="dim">${esc(c.desc)}</div>`:''}<h2>Taken</h2>${D.tasks.filter(t=>t.course===c.id).length?`<ul>${D.tasks.filter(t=>t.course===c.id).sort(cmp).map(taskRow).join('')}</ul>`:none('Geen taken bij dit vak.')}<h2>Projecten</h2>${D.projects.filter(p=>p.course===c.id).map(p=>`<div>${esc(p.title)} · ${pg(p)}%</div>`).join('')||none('Geen projecten.')}<h2>Notities</h2>${D.notes.filter(n=>n.course===c.id).map(n=>`<div>${esc(n.title||'Zonder titel')}</div>`).join('')||none('Geen notities.')}`,'w12'):'')},
+notities(){const q=UI.q.toLowerCase(),l=D.notes.filter(n=>(n.title+n.body).toLowerCase().includes(q)).sort((a,b)=>b.mod-a.mod);
+return W('Notities',`<div class="row"><button class="pri" data-a="nn">+ Nieuwe notitie</button><input data-q value="${esc(UI.q)}" placeholder="Zoek in notities" aria-label="Zoek"></div>${l.length?`<ul>${l.map(n=>`<li><span class="t"><b>${esc(n.title||'Zonder titel')}</b><small class="dim">${esc(n.body.slice(0,140))}</small><small class="dim">${cn(n.course)?esc(cn(n.course))+' · ':''}gewijzigd ${new Date(n.mod).toLocaleDateString('nl-NL')}, gemaakt ${new Date(n.created).toLocaleDateString('nl-NL')}</small></span><button data-a="en" data-i="${n.id}">Bewerk</button><button data-a="dn" data-i="${n.id}" aria-label="Verwijder">×</button></li>`).join('')}</ul>`:none(D.notes.length?'Geen notities gevonden.':'Nog geen notities. Leg hier ideeën uit ECHO verder uit.')}`,'w12')},
+focus(){const o=D.tasks.filter(t=>t.status!=='done'),h=D.sessions.slice(-8).reverse();
+return W('Focus-timer',`<div class="reactor" id="tw"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="92" fill="none" stroke="var(--line)" stroke-width="6"/><circle id="arc" cx="100" cy="100" r="92" fill="none" stroke="var(--a)" stroke-width="6" stroke-linecap="round" stroke-dasharray="578" transform="rotate(-90 100 100)"/></svg><div style="text-align:center">${tmini()}</div></div>${tbtn}<button data-a="trst">Reset</button><button data-a="tsw">Werk / pauze</button></div><div class="row"><button data-a="pre" data-w="25" data-r="5">25 / 5</button><button data-a="pre" data-w="50" data-r="10">50 / 10</button></div><div class="row dim">Eigen: werk <input id="cw" type="number" min="1" max="180" value="${D.cfg.work}" style="width:80px" aria-label="Werkminuten"> pauze <input id="cr" type="number" min="1" max="60" value="${D.cfg.rest}" style="width:80px" aria-label="Pauzeminuten"><button data-a="cust">Toepassen</button></div>`,'w6')
++W('Sessie koppelen',`<label class="dim">Vak<select data-t="course">${co().map(([a,b])=>`<option value="${a}"${T.course===a?' selected':''}>${esc(b)}</option>`).join('')}</select></label><label class="dim">Taak<select data-t="task">${[['','Geen'],...o.map(t=>[t.id,t.title])].map(([a,b])=>`<option value="${a}"${T.task===a?' selected':''}>${esc(b)}</option>`).join('')}</select></label><h2>Geschiedenis</h2>${h.length?`<ul>${h.map(s=>`<li class="${s.done?'done':''}"><span class="t">${new Date(s.start).toLocaleString('nl-NL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}<small class="dim">${[cn(s.course),(D.tasks.find(t=>t.id===s.task)||{}).title].filter(Boolean).map(esc).join(' · ')}</small></span>${s.dur} min · ${s.done?'voltooid':'afgebroken'}</li>`).join('')}</ul>`:none('Nog geen sessies.')}`,'w6')},
+projects(){const p=D.projects.find(x=>x.id===UI.sp),l=D.projects.filter(x=>(!UI.pst||x.status===UI.pst)&&(!UI.ppr||x.prio===UI.ppr)).sort(cmp);
+return W('Projecten',`<div class="row"><button class="pri" data-a="np">+ Nieuw project</button>${sel('pst',[['','Alle statussen'],...E(ST)],UI.pst)}${sel('ppr',[['','Alle prioriteiten'],...E(PR)],UI.ppr)}</div>${l.length?`<ul>${l.map(x=>`<li class="${x.status==='done'?'done':''}"><span class="t">${esc(x.title)}<small class="dim">${[cn(x.course),ST[x.status],x.due?'deadline '+fd(x.due):''].filter(Boolean).map(esc).join(' · ')}</small>${bar(pg(x))}</span><span class="pill pr-${x.prio}">${PR[x.prio]}</span><b>${pg(x)}%</b><button data-a="sp" data-i="${x.id}">Open</button><button data-a="ep" data-i="${x.id}">Bewerk</button><button data-a="dp" data-i="${x.id}" aria-label="Verwijder">×</button></li>`).join('')}</ul>`:none(D.projects.length?'Geen projecten voor dit filter.':'Nog geen projecten. Maak er een aan voor een grotere opdracht.')}`,'w12')
++(p?W(esc(p.title),`${p.desc?`<div class="dim">${esc(p.desc)}</div>`:''}${bar(pg(p))}<div>${pg(p)}% klaar</div><input data-sub placeholder="Nieuwe subtaak, Enter" aria-label="Nieuwe subtaak" maxlength="80">${p.subs.length?`<ul>${p.subs.map((s,i)=>`<li class="${s.d?'done':''}"><button class="chk" data-a="st" data-i="${s.id}" aria-label="Afvinken">${s.d?'✓':''}</button><span class="t">${esc(s.t)}</span><button data-a="su" data-i="${s.id}" ${i?'':'disabled'} aria-label="Omhoog">↑</button><button data-a="sd" data-i="${s.id}" ${i<p.subs.length-1?'':'disabled'} aria-label="Omlaag">↓</button><button data-a="se" data-i="${s.id}">Bewerk</button><button data-a="sx" data-i="${s.id}" aria-label="Verwijder">×</button></li>`).join('')}</ul>`:none('Nog geen subtaken. Voortgang wordt hieruit berekend.')}<button data-a="spx">Sluiten</button>`,'w12'):'')},
+stats(){const t=day(),wk=back(6),has=D.sessions.length,days=[...Array(7)].map((_,i)=>back(6-i)),mx=Math.max(1,...days.map(d=>mins(d,d))),ms=Object.values(D.missions),md=ms.filter(m=>m.done).length,dn=D.tasks.filter(x=>x.status==='done').length;
+const big=(n,l)=>`<div><div class="big" style="font-size:28px">${n}</div><div class="dim">${l}</div></div>`;
+return W('Overzicht',`<div class="row" style="gap:24px">${big(mins(t,t)+' min','focus vandaag')}${big(mins(wk,t)+' min','focus deze week')}${big(D.sessions.filter(s=>s.done).length,'voltooide sessies')}${big(dn,'taken klaar')}${big(D.tasks.length-dn,'taken open')}${big(D.projects.filter(p=>p.status==='done').length,'projecten klaar')}${big(ms.length?md+'/'+ms.length:'–','missies gehaald')}</div>`,'w12')
++W('Focus per dag (min)',has?`<div class="chart">${days.map(d=>{const m=mins(d,d);return `<div>${m||''}<i style="height:${Math.round(m/mx*90)}%"></i>${new Date(d+'T00:00').toLocaleDateString('nl-NL',{weekday:'short'})}</div>`}).join('')}</div>`:none('Nog geen focussessies. Start er een via Study, Focus; je grafiek verschijnt hier.'),'w6')
++W('Per vak',D.courses.length?`<ul>${D.courses.map(c=>{const ts=D.tasks.filter(x=>x.course===c.id),d=ts.filter(x=>x.status==='done').length;return `<li class="cc" style="border-left-color:${esc(c.color)}"><span class="t">${esc(c.name)}<small class="dim">${d}/${ts.length} taken · ${mins('0','9',s=>s.course===c.id)} min</small>${bar(ts.length?Math.round(d/ts.length*100):0)}</span></li>`}).join('')}</ul>`:none('Nog geen vakken.'),'w6')
++W('Back-up',`<div class="row"><button data-a="ex">Exporteer JSON</button><button data-a="im">Importeer JSON</button><button data-a="rs">Alles wissen</button></div><div class="dim">Alles staat alleen op dit apparaat. Exporteer af en toe een back-up.</div>`,'w12')}
+};
+/* ---- navigatie ---- */
+const NAV=[['home','HOME'],['study','STUDY'],['projects','PROJECTS'],['stats','STATS']];let cur='home';
+function go(v){if(!V[v])v='home';cur=v;if(location.hash!=='#'+v)location.hash=v;draw()}
+function draw(){$('#nav').innerHTML=NAV.map(([k,l])=>`<button class="${k===cur?'on':''}" data-a="go" data-v="${k}">${l}</button>`).join('');$('#v').innerHTML=V[cur]();tdraw();clk()}
+addEventListener('hashchange',()=>{const v=location.hash.slice(1);if(V[v]&&v!==cur){cur=v;draw()}});
+function clk(){const e=$('#clk');if(!e)return;const d=new Date(),h=d.getHours();e.textContent=d.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});$('#dt').textContent=d.toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'long'});$('#gr').textContent=(h<6?'Goedenacht':h<12?'Goedemorgen':h<18?'Goedemiddag':'Goedenavond')+', Yarick'}
+setInterval(()=>{if(T.run&&tl()<=0)fin();else tdraw();clk()},500);
+document.addEventListener('visibilitychange',()=>{if(T.run&&tl()<=0)fin();else{tdraw();if(T.run&&!document.hidden)wl(1)}});
+/* ---- acties ---- */
+const tg=(c,id,f)=>{const x=D[c].find(i=>i.id===id);f(x);save();draw()};
+const sub=(i,f)=>{const p=D.projects.find(x=>x.id===UI.sp);f(p,p.subs.findIndex(s=>s.id===i));save();draw()};
+const A={go:b=>go(b.dataset.v),tab:b=>{UI.tab=b.dataset.v;draw()},gf:()=>{UI.tab='focus';go('study')},
+tog:b=>tg('tasks',b.dataset.i,t=>{t.status==='done'?(t.status='todo',delete t.doneAt):(t.status='done',t.doneAt=day())}),nt:()=>edit('tasks','task',null,cur==='home'?{due:day()}:{}),et:b=>edit('tasks','task',b.dataset.i),dt:b=>del('tasks',b.dataset.i),
+nc:()=>edit('courses','course'),ec:b=>edit('courses','course',b.dataset.i),dc:b=>del('courses',b.dataset.i),sc:b=>{UI.cs=UI.cs===b.dataset.i?null:b.dataset.i;draw()},
+np:()=>{UI.tab;edit('projects','project');go('projects')},ep:b=>edit('projects','project',b.dataset.i),dp:b=>del('projects',b.dataset.i),sp:b=>{UI.sp=b.dataset.i;draw()},spx:()=>{UI.sp=null;draw()},
+nn:()=>{UI.tab='notities';go('study');edit('notes','note')},en:b=>edit('notes','note',b.dataset.i),dn:b=>del('notes',b.dataset.i),
+ms:()=>{const m=D.missions[day()]||{};form('Dagmissie',F.mission,m,o=>{D.missions[day()]={done:false,...m,...o}})},md:()=>{const m=D.missions[day()];m.done=!m.done;save();draw()},
+st:b=>sub(b.dataset.i,(p,i)=>p.subs[i].d=!p.subs[i].d),sx:b=>ask('Subtaak verwijderen?',()=>{const p=D.projects.find(x=>x.id===UI.sp);p.subs=p.subs.filter(s=>s.id!==b.dataset.i)}),
+su:b=>sub(b.dataset.i,(p,i)=>{if(i>0)[p.subs[i-1],p.subs[i]]=[p.subs[i],p.subs[i-1]]}),sd:b=>sub(b.dataset.i,(p,i)=>{if(i<p.subs.length-1)[p.subs[i+1],p.subs[i]]=[p.subs[i],p.subs[i+1]]}),
+se:b=>{const p=D.projects.find(x=>x.id===UI.sp),s=p.subs.find(x=>x.id===b.dataset.i);form('Subtaak',F.sub,s,o=>{s.t=o.t})},
+tgo:()=>{wl(!T.run);if(T.run){T.left=tl();T.run=false}else{if(T.ph==='work'&&T.left===T.dur)T.start=Date.now();T.end=Date.now()+T.left*1000;T.run=true}sv();tdraw()},
+trst:()=>{wl(0);const el=T.dur-tl();if(T.ph==='work'&&el>=60){log(Math.round(el/60),false)}T.run=false;T.left=T.dur;T.start=0;sv();draw()},
+tsw:()=>{wl(0);T.run=false;T.ph=T.ph==='work'?'rest':'work';T.dur=(T.ph==='work'?D.cfg.work:D.cfg.rest)*60;T.left=T.dur;sv();draw()},
+pre:b=>cfg(+b.dataset.w,+b.dataset.r),cust:()=>cfg(Math.min(180,Math.max(1,+$('#cw').value||25)),Math.min(60,Math.max(1,+$('#cr').value||5))),
+rs:()=>ask('Alle gegevens (vakken, taken, projecten, notities, sessies) worden definitief gewist. Maak eerst een back-up als je twijfelt.',()=>{D=DEF();D.v=2;T={ph:'work',dur:1500,left:1500,run:false,end:0,start:0,course:'',task:''};UI.cs=UI.sp=null},'Ja, wis alles'),
+ex:()=>{modal(`<h3>Back-up (JSON)</h3><textarea id="ta" readonly rows="10">${esc(JSON.stringify(D))}</textarea><div class="dim">Kopieer deze tekst en bewaar hem op een veilige plek.</div><div class="row"><button class="pri" id="cp">Kopieer</button><button id="no">Sluiten</button></div>`);$('#no').onclick=closeM;$('#cp').onclick=()=>{const t=$('#ta');t.select();try{navigator.clipboard.writeText(t.value)}catch(e){}$('#cp').textContent='Gekopieerd'}},
+im:()=>{modal(`<h3>Importeer back-up</h3><textarea id="ta" rows="10" placeholder="Plak hier je JSON"></textarea><div id="er"></div><div class="row"><button class="pri" id="ok">Importeer</button><button id="no">Annuleren</button></div>`);$('#no').onclick=closeM;$('#ok').onclick=()=>{try{const o=JSON.parse($('#ta').value);if(!Array.isArray(o.tasks)||!Array.isArray(o.courses))throw 0;ask('Alle huidige gegevens worden vervangen. Doorgaan?',()=>{D=norm(o);T=D.timer||T},'Ja, importeer')}catch(e){$('#er').textContent='Dit is geen geldige NOVA-back-up.'}}}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled)A[b.dataset.a](b)});
+document.addEventListener('change',e=>{const d=e.target.dataset;if(d.f){UI[d.f]=e.target.value;draw()}if(d.t){T[d.t]=e.target.value;sv()}});
+document.addEventListener('input',e=>{if(e.target.dataset.q!==undefined){UI.q=e.target.value;draw();const i=$('[data-q]');i.focus();i.setSelectionRange(99,99)}});
+document.addEventListener('keydown',e=>{const d=e.target.dataset,v=e.target.value&&e.target.value.trim();if(e.key!=='Enter'||!v)return;
+if(d.qt!==undefined){D.tasks.push({id:uid(),...DFL.tasks,title:v,due:day(),created:Date.now()});save();draw();$('[data-qt]').focus()}
+if(d.sub!==undefined){D.projects.find(p=>p.id===UI.sp).subs.push({id:uid(),t:v,d:false});save();draw();$('[data-sub]').focus()}});
+window.NOVA={get data(){return D},go};
+go(V[location.hash.slice(1)]?location.hash.slice(1):'home');
+</script>
+</body>
+</html>
